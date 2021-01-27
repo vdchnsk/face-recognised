@@ -16,21 +16,27 @@ while True:
     
     #Detect all the faces first
     faces = face_detector.detectMultiScale(frame_grayscale)
-    #Detect all the smiles
-    smiles = smile_detector.detectMultiScale(frame_grayscale, scaleFactor=1.7, minNeighbors=30)#minNeighbou - minimal number of objects, wich the smile contains
-    
+
     for (x, y, w, h) in faces: # taking dots from the lidt "faces"
         cv2.rectangle(frame,(x,y),(x+w , y+h), (100,200,50), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
-
-    for (x, y, w, h) in smiles: # taking dots from the lidt "faces"
-        cv2.rectangle(frame,(x,y),(x+w , y+h), (0,0,300), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
         
+        the_face = frame[y:y + w , x:x + h] # slicing the list (NumPy feature)
+        face_grayscale = cv2.cvtColor(the_face , cv2.COLOR_BGR2GRAY) #B&W-mode (optimization: RGB has 3 channels ,but B&W only 1)
+
+        #Detect all the smiles
+        smiles = smile_detector.detectMultiScale(face_grayscale, scaleFactor=1.7, minNeighbors=30) #minNeighbou - minimal number of objects, wich the smile contains
+
+        # for (x_smile, y_smile, w_smile, h_smile) in smiles:
+        #     cv2.rectangle(the_face,(x_smile,y_smile),(x_smile + w_smile , y_smile + h_smile), (0,0,300), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
+
+        if len(smiles)>0:
+            cv2.putText(frame, "smiling", (x, y+h+40), fontScale = 3, fontFace = cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
+
     # window settings
     cv2.imshow("Smile detector",frame)
 
     #Display
     cv2.waitKey(1) #updating frames every 1 ms , if parametes are emty or == 0, then the program will be waiting for key pressing
-
 
 #Clean up
 asset.release() #OS gives us a permisiion to use camera/video-asset e.t.c (I got it so)
