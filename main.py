@@ -2,7 +2,7 @@ import cv2
 
 #Face finder
 face_detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-
+smile_detector = cv2.CascadeClassifier("haarcascade_smile.xml")
 #Webcome grabbing
 asset  = cv2.VideoCapture("assets/Can You Watch This Without Smiling_.mp4")
 
@@ -16,10 +16,15 @@ while True:
     
     #Detect all the faces first
     faces = face_detector.detectMultiScale(frame_grayscale)
+    #Detect all the smiles
+    smiles = smile_detector.detectMultiScale(frame_grayscale, scaleFactor=1.7, minNeighbors=30)#minNeighbou - minimal number of objects, wich the smile contains
     
     for (x, y, w, h) in faces: # taking dots from the lidt "faces"
         cv2.rectangle(frame,(x,y),(x+w , y+h), (100,200,50), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
 
+    for (x, y, w, h) in smiles: # taking dots from the lidt "faces"
+        cv2.rectangle(frame,(x,y),(x+w , y+h), (0,0,300), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
+        
     # window settings
     cv2.imshow("Smile detector",frame)
 
