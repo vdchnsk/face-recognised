@@ -1,13 +1,14 @@
 import cv2
 import os
+from ffpyplayer.player import MediaPlayer
 
 #Face finder
 face_detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 smile_detector = cv2.CascadeClassifier("haarcascade_smile.xml")
 #Webcome/video  grabbing
-
-your_file_to_work_with = "assets/Laughing_at_you.jpg" #Add here the path for ur file
+your_file_to_work_with = "assets/Can You Watch This Without Smiling_.mp4" #Add here the path for ur file
 asset  = cv2.VideoCapture(your_file_to_work_with) #pass "0" into args to use webcam
+# player = MediaPlayer(your_file_to_work_with) #to turn on sound(it douesnt work correctly ,becuse the video becomes slower than the sound (there are different channels)now sure if itll be working with webcam)
 #Showing the asset
 while True:
     succesfully_read_frame , frame = asset.read() #reads the current frame of the asset or the webcam stream
@@ -33,7 +34,7 @@ while True:
         #     cv2.rectangle(the_face,(x_smile,y_smile),(x_smile + w_smile , y_smile + h_smile), (0,0,300), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
 
         if len(smiles)>0:
-            cv2.putText(frame, "person", (x, y+h+40), fontScale = 3, fontFace = cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
+            cv2.putText(frame, "smiling", (x, y+h+40), fontScale = 3, fontFace = cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
     # window settings
     cv2.imshow("Smile detector",frame)
 
@@ -55,11 +56,10 @@ while True:
     elif space_pressed == False :
         cv2.waitKey(1)
 
-    #detectong extention of passed file to work with.Actions with it
+#detectong extention of passed file to work with.Actions with it
 filename, file_extention = os.path.splitext(your_file_to_work_with) #spliting the fileName and its extention
 if file_extention == ".png" or file_extention == ".jpeg" or file_extention ==".jpg":# If extention is an extention of image, the frame stops and doesnt update.If its video,frames are changing
     cv2.waitKey(0)
-
 
 #Cleaning up
 asset.release() #OS gives us a permisiion to use camera/video-asset e.t.c (I got it so)
