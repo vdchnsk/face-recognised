@@ -3,9 +3,8 @@ import cv2
 #Face finder
 face_detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 smile_detector = cv2.CascadeClassifier("haarcascade_smile.xml")
-#Webcome grabbing
-asset  = cv2.VideoCapture("assets/Can You Watch This Without Smiling_.mp4")
-
+#Webcome/video  grabbing
+asset  = cv2.VideoCapture("assets/Can You Watch This Without Smiling_.mp4") #pass "0" into args to use webcam
 #Showing the asset
 while True:
     succesfully_read_frame , frame = asset.read() #reads the current frame of the asset or the webcam stream
@@ -15,7 +14,7 @@ while True:
     frame_grayscale = cv2.cvtColor(frame , cv2.COLOR_BGR2GRAY) #B&W-mode (optimization: RGB has 3 channels ,but B&W only 1)
     
     #Detect all the faces first
-    faces = face_detector.detectMultiScale(frame_grayscale)
+    faces = face_detector.detectMultiScale(frame_grayscale, scaleFactor=1.5, minNeighbors=2) #delete "scaleFactor=1.5, minNeighbors=2" for better resault,but the video'll become much more slower
 
     for (x, y, w, h) in faces: # taking dots from the lidt "faces"
         cv2.rectangle(frame,(x,y),(x+w , y+h), (100,200,50), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
@@ -31,13 +30,26 @@ while True:
 
         if len(smiles)>0:
             cv2.putText(frame, "smiling", (x, y+h+40), fontScale = 3, fontFace = cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
-
     # window settings
     cv2.imshow("Smile detector",frame)
 
     #Display
-    cv2.waitKey(1) #updating frames every 1 ms , if parametes are emty or == 0, then the program will be waiting for key pressing
+    key_pressed= cv2.waitKey(1) #updating frames every 1 ms , if parametes are emty or == 0, then the program will be waiting for key pressing
+    space_pressed = False
+     
+    #window actions
+    if cv2.getWindowProperty('Smile detector',cv2.WND_PROP_VISIBLE) < 1: #windows does close if the user pressed "x" at the right top of the window       
+        break
+        cv2.destroyAllWindows()
 
-#Clean up
+    if key_pressed == 32:#windows does close if the user pressed "Esc"
+        space_pressed = True
+
+        #does pause the video
+    if space_pressed == True:
+        cv2.waitKey(0)
+    elif space_pressed == False :
+        cv2.waitKey(1)
+#Cleaning up
 asset.release() #OS gives us a permisiion to use camera/video-asset e.t.c (I got it so)
 cv2.destroyAllWindows() #destroyong all the recently opened smile detector windows
