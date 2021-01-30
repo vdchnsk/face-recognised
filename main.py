@@ -1,15 +1,19 @@
 import cv2
+import os
 
 #Face finder
 face_detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 smile_detector = cv2.CascadeClassifier("haarcascade_smile.xml")
 #Webcome/video  grabbing
-asset  = cv2.VideoCapture("assets/Can You Watch This Without Smiling_.mp4") #pass "0" into args to use webcam
+
+your_file_to_work_with = "assets/Laughing_at_you.jpg" #Add here the path for ur file
+asset  = cv2.VideoCapture(your_file_to_work_with) #pass "0" into args to use webcam
 #Showing the asset
 while True:
     succesfully_read_frame , frame = asset.read() #reads the current frame of the asset or the webcam stream
     if not succesfully_read_frame: #Looks for the errors and stops the apps work if they are
         break
+        print("Error with detecting some frame")
 
     frame_grayscale = cv2.cvtColor(frame , cv2.COLOR_BGR2GRAY) #B&W-mode (optimization: RGB has 3 channels ,but B&W only 1)
     
@@ -29,7 +33,7 @@ while True:
         #     cv2.rectangle(the_face,(x_smile,y_smile),(x_smile + w_smile , y_smile + h_smile), (0,0,300), 4) # Drawing rectangle around faces (100,200,50)- color; 4- 4px of sickness of the rectangle
 
         if len(smiles)>0:
-            cv2.putText(frame, "smiling", (x, y+h+40), fontScale = 3, fontFace = cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
+            cv2.putText(frame, "person", (x, y+h+40), fontScale = 3, fontFace = cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
     # window settings
     cv2.imshow("Smile detector",frame)
 
@@ -50,6 +54,13 @@ while True:
         cv2.waitKey(0)
     elif space_pressed == False :
         cv2.waitKey(1)
+
+    #detectong extention of passed file to work with.Actions with it
+filename, file_extention = os.path.splitext(your_file_to_work_with) #spliting the fileName and its extention
+if file_extention == ".png" or file_extention == ".jpeg" or file_extention ==".jpg":# If extention is an extention of image, the frame stops and doesnt update.If its video,frames are changing
+    cv2.waitKey(0)
+
+
 #Cleaning up
 asset.release() #OS gives us a permisiion to use camera/video-asset e.t.c (I got it so)
 cv2.destroyAllWindows() #destroyong all the recently opened smile detector windows
