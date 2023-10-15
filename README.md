@@ -1,4 +1,4 @@
-# 🎭 Face_detector
+# 🎭 FaceRecognised
 
 **Version 0.9.0**
 
